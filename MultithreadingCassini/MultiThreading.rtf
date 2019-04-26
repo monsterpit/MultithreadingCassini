@@ -1,0 +1,103 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fnil\fcharset0 LucidaGrande-Bold;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{check\}}{\leveltext\leveltemplateid1\'01\uc0\u10003 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural\qc\partightenfactor0
+\ls1\ilvl0
+\f0\b\fs24 \cf0 {\listtext	
+\f1 \uc0\u10003 
+\f0 	}Multithreading\
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qc\partightenfactor0
+
+\f2\b0 \cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\f0\b Multithreading is for keeping long running things off of the main queue where UI runs 
+\f2\b0 \
+because we want the UI to be incredibly responsive when someone touches down we will immediately respond to their touch and not be having our app freeze that would be just death to have your  app freeze even for 1 second is a eternity for your app to just be not responding at all .\
+So Multithreading is a much bigger topic :- \
+
+\f0\b You can do a lot of other stuff with multi threading 
+\f2\b0 but we are gonna focus on trying to get long running things, things that might block off on to other threads .\
+\
+The way the multi-threading works in iOS is using queues.\
+i am using queue in the sense of like :-\
+You go to the movies and you stand in line that's a queue .\
+And 
+\f0\b what's in the queues in iOS multiThreading is blocks of code almost always closures , that you put in this queue
+\f2\b0 \
+And so you got these queues there multiple different kinds of queues and system then comes along and it has threads.\
+Threads are threads of execution there are essentially opportunities to run code and it can run them kind of in parallel \
+.I actually guess if you had a multiprocessor or multi-core processor it could actually run things in parallel \
+But even if you had a single core single thread of execution processor the operating system know how to share time up in tiny little increments between all of these threads of executions .\
+So the OS comes along and takes things off the queue the next person in line the next closure in line takes it off and it runs it.\
+So that's how we do queues \
+\
+and there's  2 kinds of queues\
+
+\f0\b (1)Serial queues:-
+\f2\b0 \
+
+\f0\b Which is iOS comes along take something of the queue and then as soon as that thing has run to completion .
+\f2\b0 \
+
+\f0\b Then it goes back and gets another one off that queue .\
+That's called serial queue
+\f2\b0 \
+\
+
+\f0\b (2)Concurrent queues :-
+\f2\b0 \
+
+\f0\b where iOS comes along and it grabs something off the queue and it starts at running and \
+maybe it has another thread that it can use and it goes and grabs another thing before the other one even finish and may be another \
+And so it might have 2 or 3 or 4 10 things running off the same queue all at the same time .\
+That's called a concurrent queue 
+\f2\b0 \
+\
+And what we want is for the UI to be unblocked \
+and
+\f0\b  the UI runs on a single serial queue called the main queue
+\f2\b0 \
+
+\f0\b and not only does the UI run on this it's the only queue that can have blocks of code put on it that do UI things.\
+So we keep all of our UI stuffs here
+\f2\b0 \
+That way we don't have to  worry about multithreaded UI where we got 2 different threads of execution both trying to draw into the same space or whatever , we never have to worry about that in iOS because all drawing all UI activity happens on this 1 queue , and
+\f0\b  since it's a serial queue, it all happens on single thread .\
+\
+
+\f2\b0 \
+So you never have to worry about multi threading UI activity going on \
+Now the way they make  main queue works is that it mostly sits there waiting for the touch event to happen\
+And when the touch event happens it processes it and figures out what code to run\
+Runs your code and then goes back into this quite state waiting for another touch \
+well when it's in that quite state it could also pull something off the main queue and run it\
+So you can put things on to the main queue blocks of code and it will run in the UI thread , the main queue , the main thread.\
+So our goal is to get everything else off the main queue , anything else that gonna take a long time or certainly  it's going to block waiting for the network or something like that we definitely want that off the main queue.\
+\
+\
+So where do we put those things ???\
+
+\f0\b We put those things in global queues ,
+\f2\b0 \
+Now actually you can create your own queue to do that but we are going to use one of these 4 global queues and this are concurrent queues\
+That you can throw your code on  and system will just come along  and run them and there's really no restriction there about what you put in there it's just it can't be UI code , but you can do other stuff all you want\
+\
+\
+\
+\
+\
+\
+\
+So how to you get the hold of main queue?\
+Well there's a struct or class called dispatchQueue\
+\
+\
+}

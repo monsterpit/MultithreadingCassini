@@ -1,0 +1,511 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fnil\fcharset0 LucidaGrande-Bold;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{check\}}{\leveltext\leveltemplateid1\'01\uc0\u10003 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural\qc\partightenfactor0
+\ls1\ilvl0
+\f0\b\fs24 \cf0 {\listtext	
+\f1 \uc0\u10003 
+\f0 	}Multithreading\
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qc\partightenfactor0
+
+\f2\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 12.43.02 PM.png \width14280 \height8240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\f0\b Multithreading is for keeping long running things off of the main queue where UI runs 
+\f2\b0 \
+because we want the UI to be incredibly responsive when someone touches down we will immediately respond to their touch and not be having our app freeze that would be just death to have your  app freeze even for 1 second is a eternity for your app to just be not responding at all .\
+So Multithreading is a much bigger topic :- \
+
+\f0\b You can do a lot of other stuff with multi threading 
+\f2\b0 but we are gonna focus on trying to get long running things, things that might block off on to other threads .\
+\
+The way the multi-threading works in iOS is using queues.\
+i am using queue in the sense of like :-\
+You go to the movies and you stand in line that's a queue .\
+And 
+\f0\b what's in the queues in iOS multiThreading is blocks of code almost always closures , that you put in this queue
+\f2\b0 \
+And so you got these queues there multiple different kinds of queues and system then comes along and it has threads.\
+Threads are threads of execution there are essentially opportunities to run code and it can run them kind of in parallel \
+.I actually guess if you had a multiprocessor or multi-core processor it could actually run things in parallel \
+But even if you had a single core single thread of execution processor the operating system know how to share time up in tiny little increments between all of these threads of executions .\
+So the OS comes along and takes things off the queue the next person in line the next closure in line takes it off and it runs it.\
+So that's how we do queues \
+\
+and there's  2 kinds of queues\
+
+\f0\b (1)Serial queues:-
+\f2\b0 \
+
+\f0\b Which is iOS comes along take something of the queue and then as soon as that thing has run to completion .
+\f2\b0 \
+
+\f0\b Then it goes back and gets another one off that queue .\
+That's called serial queue
+\f2\b0 \
+\
+
+\f0\b (2)Concurrent queues :-
+\f2\b0 \
+
+\f0\b where iOS comes along and it grabs something off the queue and it starts at running and \
+maybe it has another thread that it can use and it goes and grabs another thing before the other one even finish and may be another \
+And so it might have 2 or 3 or 4 10 things running off the same queue all at the same time .\
+That's called a concurrent queue 
+\f2\b0 \
+\
+And what we want is for the UI to be unblocked \
+and
+\f0\b  the UI runs on a single serial queue called the main queue
+\f2\b0 \
+
+\f0\b and not only does the UI run on this it's the only queue that can have blocks of code put on it that do UI things.\
+So we keep all of our UI stuffs here
+\f2\b0 \
+That way we don't have to  worry about multithreaded UI where we got 2 different threads of execution both trying to draw into the same space or whatever , we never have to worry about that in iOS because all drawing all UI activity happens on this 1 queue , and
+\f0\b  since it's a serial queue, it all happens on single thread .\
+\
+
+\f2\b0 \
+So you never have to worry about multi threading UI activity going on \
+Now the way they make  main queue works is that it mostly sits there waiting for the touch event to happen\
+And when the touch event happens it processes it and figures out what code to run\
+Runs your code and then goes back into this quite state waiting for another touch \
+well when it's in that quite state it could also pull something off the main queue and run it\
+So you can put things on to the main queue blocks of code and it will run in the UI thread , the main queue , the main thread.\
+So our goal is to get everything else off the main queue , anything else that gonna take a long time or certainly  it's going to block waiting for the network or something like that we definitely want that off the main queue.\
+\
+\
+So where do we put those things ???\
+
+\f0\b We put those things in global queues ,
+\f2\b0 \
+Now actually you can create your own queue to do that but we are going to use one of these 4 global queues and this are concurrent queues\
+That you can throw your code on  and system will just come along  and run them and there's really no restriction there about what you put in there it's just it can't be UI code , but you can do other stuff all you want\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 12.43.40 PM.png \width14540 \height7320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+
+\f0\b So how to you get the hold of main queue?
+\f2\b0 \
+Well there's a struct or class called 
+\f0\b dispatchQueue
+\f2\b0 \
+And it has a static var called "main"  that gives the main queue\
+\
+The global queue are little more expressive , there are 4 different kinds \
+the 4 of them are different based on the quality of service , that's what QoS you see reference here\
+The Quality of Service tells you what kind of thing , what kind of activity , the blocks that you are gonna put on there are doing \
+\
+
+\f0\b (1) userInteractive :- This is a very rare one to use .\
+This means that the user is in the middle of like dragging or pinching or something and you want to do something off the main queue , that has to happen so fast that it can get back to main queue in the middle of that drag .
+\f2\b0 \
+So we are talking about highly interactive tiny little pieces of work that you might wanna throw off the main queue.\
+The reason this is unusual to use is because it's really so tiny and execute so quickly , you could probably do it on the main queue , you are probably waiting for it anyways on the main queue \
+so userInteractive much more  rarely used \
+\
+
+\f0\b \
+(2)userInitiated :-
+\f2\b0 \
+The most common one to use is userInitiated\
+
+\f0\b So this is something that might take a very long time or it might take couple of seconds that maybe takes a few milliseconds you don't know , but the point about it is \
+The user has asked for it right now they touched on a button , they swiped somewhere and they are asking for something to happen .
+\f2\b0 \
+So it is initiated  by the user so they expect it to be done as soon as possible .\
+
+\f0\b So you are running this in the background it's not having the main thread but you are trying to do as soon as possible 
+\f2\b0 \
+So this is a
+\f0\b  very high priority queue
+\f2\b0 \
+
+\f0\b iOS is going to be pulling things off at queue and  running them in thread that have higher high priority .
+\f2\b0 \
+Because the user asked for it right now \
+\
+\
+\pard\tx566\tx1133\tx1281\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (3)background :-\
+background things are things the user hasn't asked for right away\
+ but they kind of things that they expect to be done fairly soon or when you have time kinda of a thin
+\f2\b0 g \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\f0\b (4)Utility :- 
+\f2\b0 \
+ once are even lower priority\
+
+\f0\b Those are things that your apps wants to do as part of its architecture
+\f2\b0 \
+for e.g. you have big database and maybe every week or so or every certain amount of data in the database you want to go clean it up and remove croft out of the database\
+that's just a utility operation .\
+
+\f0\b So that will run at very low priority
+\f2\b0 \
+\
+\
+So you pick the global queue you want based on the quality of service you want that queue to receive .\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 1.10.16 PM.png \width14760 \height6580 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+Alright you have a  queue now  either the main queue or one of these background concurrent queues with a certain quality of service .\
+\
+\
+How do you put a block of code on to that queue put it in line to get run at some point ???\
+Well you do it with 1 of this 2 function \
+async\{\} or sync\{\}\
+\
+\
+Each of them takes one argument ,\
+That argument is a block a closure takes no argument returns no arguments , there's returns no values.\
+So it's basic that block you can be and what it does is it put that block on the queue of that you are sending it to .\
+Now the difference between async and sync is that.\
+\
+
+\f0\b async:-\
+puts it on the queue and returns immediately and then just goes on to the next line of code you have .\
+so now its in the queue and someone eventually will go pull it off the queue and run it but you return immediately .
+\f2\b0 \
+\
+
+\f0\b sync :-\
+it puts it on the queue and blocks waiting for someone to take it off the queue and run it and for it to complete.
+\f2\b0 \
+So you would never do sync on the main queue.\
+Because we never want to block the main queue , but you might do sync on a non main queue\
+in fact you might do sync waiting for the main queue to finish something when you are on the other queue.\
+But mostly we are using async .\
+async is short for asynchronous (we don't really care when it runs we just wan it to run whenever it can run )\
+\
+\
+\
+\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qc\partightenfactor0
+
+\f0\b \cf0 Creating your own queue
+\f2\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 1.24.36 PM.png \width15060 \height5860 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+You can create your own queue by just calling\
+DispatchQueue initializer  which has this label argument .\
+Which is just that label just shows up  in the debugger so you can see which queue you are  on \
+The debugger fully support for queues\
+It will show you what thread everything \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 1.36.12 PM.png \width14580 \height6540 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+\
+
+\f0\b you can also do a lot of other things with multi-threading like  protecting critical sections in your code doing synchronous dispatch , locking between things\
+(do RnD on it)
+\f2\b0 \
+\
+\
+There's whole other API to this like 
+\f0\b OperationQueue
+\f2\b0  and 
+\f0\b Operation
+\f2\b0    
+\f0\b (RnD)
+\f2\b0 \
+
+\f0\b Those would be used if you are doing like some hugh mathematical equation that has a lot of parallel processing that you could do but a lot of the parallel pieces depends on eachother because Operation allows you to set up dependencies .
+\f2\b0 \
+This little block of code depends on this one running first but I am going to start these all off   and just wait until the one's that depend get finished .You see what I am saying all these dependency management but you get that bu using the object oriented operation queue and operation API\
+\
+\
+
+\f0\b (*****)Dispatch queue is a part of what we call Grand Central Dispatch because we are dispatching these blocks of code onto these queues.\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2\b0 \cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 3.33.04 PM.png \width14620 \height4560 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2\b0 \cf0 So where else you gonna encounter multi threading in addition to do your own multi threading you might also have iOS API that takes blocks as argument and when it runs those blocks like when it finishes doing something or encounters an error , it runs those block off the main queue \
+and when you call that API in iOS you have got to be really be careful  that in the blocks you give to a iOS for it to run when it's done don't have any UI in there or if you do have UI dispatch back it to main queue.\
+because you can only do UI Stuff on the main queue\
+\
+\
+\
+  \
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 3.55.12 PM.png \width14280 \height6960 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+So let's see what it looks like to call an iOS API like this takes a block so here is an iOS API called URL session\
+This is used for fetching stuff from URLs over the network , we already saw it with data object\
+But that was kind of a dumb thing you couldn't you can't get any HTTP response out of it,\
+The errors you may have to  them kind of funny .\
+URLSession is much more sophisticated way to request something on network \
+\
+It's a very simple API you just create a \
+URLSession  with certain configuration \
+Great things with URLSessions is you can do things like :- \
+I want my timeout to be 5 seconds \
+You cant do that with data thing,\
+It's got built in timeout .\
+In URLSession you can specify how long you want to wait before you timeout on the network \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b \cf0 In URLSession you can specify timeout while data has default timeout
+\f2\b0 \
+\
+\
+(1)So you create your session with some configuration usually the default configuration\
+\
+\
+Now all you have to do to make it go fetch something is create a URL and call the function on the session called dataTask(with : URL) \
+\pard\tx560\tx1120\tx1127\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b \cf0  dataTask(with : URL)  creates whats called a data task a task to go get some data 
+\f2\b0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 and
+\f0\b  it starts out paused
+\f2\b0  \
+and then you gonna say the very next line you almost always say
+\f0\b  resume  and it starts it going 
+\f2\b0 \
+\
+\
+\
+\
+Notice that  dataTask(with : URL) function takes another argument (We are using trailing closure notation to put it outside the parentheses ) but it's just an argument to data tasks there\
+and that argument is a closure that this nsurl or url thing is going to call URLSession going to call when it gets the data and you can see the closure actually takes of the data that it gets as an argument \
+also responds in error which is HTTP response and any error that might come along there\
+\
+\
+Bottom line is you give it a closure.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b \cf0 Now the interesting thing about this closure is it executed off the main queue.
+\f2\b0 \
+
+\f0\b So if you want to do UI Things in there which you might wanna  do because you want to do something with the data you got back and put it in the UI \
+can you do it in there and the answer is no you cannot ....\
+because you cant do UI stuff off the main queue.
+\f2\b0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 3.56.06 PM.png \width13700 \height7320 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+But what if i need to do UI Stuff ?\
+Well you just going to dispatch back to the main queue in there\
+Dispatch queue main\
+ get the main queue\
+ async\
+ put some closure\
+and do your UI stuff.\
+Now this looks almost too good to be true but there is little be to think in terms of timing\
+\
+\
+\
+\
+\
+\
+walk through timing of this code \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.41.31 PM.png \width14240 \height7500 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+First line a start to do URLSession request \
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.42.43 PM.png \width13960 \height8380 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+then line b where we create this data task  , this line b returns immediately.\
+It immediately creates dataTask \
+grabs that closure\
+ and hold on it for a second \
+starts the task paused \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.45.08 PM.png \width14700 \height8480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+Then line g executes\
+because the fact line b returned immediately\
+of course line g executes and you say resume\
+that starts that task fetching the URL over the network in the background not in the main queue\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.48.09 PM.png \width14480 \height8040 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+So the next line that executes is line h \
+because resume just instantly starts in the background \
+but line h continues in the foreground  and runs\
+\
+\
+\
+\
+What do think is the next line that executes is?\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.50.53 PM.png \width14460 \height8620 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+Well about 5 seconds or five hours or five minutes or whatever later \
+line c will execute.\
+This happens when the data comes back from the URL.\
+So now I am doing something with the data processing , looking at it , we are doing whatever I want to...\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.53.03 PM.png \width14540 \height8400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 Then line d executes \
+\
+because I need to do some UI work\
+  so I dispatch a closure that says do UI Stuff here on to the main queue and it gets in line to run on the main queue \
+but main queue might be busy or there might be other things in on the main queue ahead of this closure , so this is not going to execute immediately\
+\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 5.59.36 PM.png \width14460 \height8240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+instead line f will execute immediately \
+So notice line e has still not run \
+but line f has \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 6.00.48 PM.png \width14540 \height8600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+what happens next finally line e run whenever , the main queue is quite and ready to do it , and all the other closures that were ahead of it in line run \
+Then e runs\
+\
+The code makes stuff look like it run from top to bottom but it doesn't it runs a little out of order there because it's happening in a background thread \
+\
+\
+\
+\
+Summary \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2019-04-26 at 6.03.35 PM.png \width14420 \height8360 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+So the summary is it runs a b g h c d f e\
+but its the most likely order because this are threads things are happening simultaneously ,\
+it is possible believe it or not that line  e the UI stuff could actually run before line f ,\
+it''s possible it dispatchers of to the main queue and the main queue immediately grabs it \
+and main queue is a very high priority queue may be it immediately grabs it and starts running it before f has a chance  to even run \
+, if you have a single processor early  that would definitely be possible \
+\
+So that's most important thing to understand about multi-threading is it's kind of asynchronous nature and that will take some getting used to believe me. \
+}

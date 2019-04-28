@@ -73,18 +73,25 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fYD-PJ-kNI">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </scrollView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="QG3-8D-LwN">
+                                <rect key="frame" x="188.5" y="456.5" width="37" height="37"/>
+                                <color key="color" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="QG3-8D-LwN" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="I6I-Vd-W6n"/>
                             <constraint firstItem="fYD-PJ-kNI" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="KYt-9n-JM8"/>
                             <constraint firstItem="fYD-PJ-kNI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="eE2-AF-1pl"/>
                             <constraint firstItem="fYD-PJ-kNI" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="iTn-SY-hfL"/>
                             <constraint firstItem="fYD-PJ-kNI" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="sIK-vX-7Jh"/>
+                            <constraint firstItem="QG3-8D-LwN" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vqR-Cm-duu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="scrollView" destination="fYD-PJ-kNI" id="akT-gr-ked"/>
+                        <outlet property="spinner" destination="QG3-8D-LwN" id="6gD-mn-7YJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

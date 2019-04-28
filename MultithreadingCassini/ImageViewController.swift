@@ -32,12 +32,10 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
             imageView.image = newValue
             
             imageView.sizeToFit()
-            // how about we optional chain it
-            //that's make it this line will be ignored if scrollView is nil
-            // all that's happening here is that we are setting to image to nil
-            // it's for just preparing its going to start out nil
+
             scrollView?.contentSize = imageView.frame.size
             
+            spinner?.stopAnimating()
         }
         
     }
@@ -49,6 +47,8 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
             fetchImage()
         }
     }
+    
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     
     @IBOutlet weak var scrollView: UIScrollView!{
 
@@ -77,6 +77,8 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
     
     func fetchImage(){
         
+        spinner.startAnimating()
+        
         if let url = imageURL{
             
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -88,32 +90,8 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
                         self?.image = UIImage(data: imageData)
                         
                     }
+  
                 }
-
-                /*
-                    But DispatchQueue.main.async is happening perhaps a minute
-                 after this line of code url = imageURL
-                 
-                 It's putting on another queue it might be blocking the network
-                 Now that this leads us to another one last thing we need to do here is which is what happens if we request this thing
-                 and not through our UI but some other UI ,
-                 someone calls this imageURL and sets it to something else
-                 They set this imageURL to something else and we go to fetch that image
-                 
-                 what happens when this image self?.image = UIImage(data: imageData) comes back we dont care about it
-                 we are off on working on a new image , So when this comes back
-                 we need to make sure that our current ImageURL is the URl we requested here
-                 and we can easily do that by saying
-                 url == self?.imageURL which is weak
-                 So here we are just checking after this takes five minutes if that URl is  the one I asked for
-                 because if its not idc about it anymore in this class
-                 So this this is what i am talking about where when you are doing multithreading
-                 you have to think about timing of things
-                 because it might take a while and they might come back and things might be different than they were when you left
-                 So this is really a great little peice of code to really understand  because it covers a lot of ground
-                 from the weak self and checking this and dispatching back to main queue getting this one of the background queue
-                 */
-                
                 
             }
         }
@@ -142,3 +120,19 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
 
 
 //option key + drag in simulator to pinch 
+
+
+
+/*
+ We need to give them feedback we are off getting something
+ To let them know  yeah I am working on it
+ Even though you hit back you could stay here and you cansee your earth image
+ 
+ So how gonna we do it ?
+ We gonna do it with little spinner ... called an activity indicator
+ It's a little spinning view and this is the one to show you for another reason too which is that it can sometime get a little crowded trying to build your Ui you want.
+ especially when things go all  the way to the edges like this scrollView
+ 
+ So this spinner it's called UI Activity indicator View
+ 
+ */

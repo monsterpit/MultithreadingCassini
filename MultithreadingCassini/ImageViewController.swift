@@ -32,8 +32,11 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
             imageView.image = newValue
             
             imageView.sizeToFit()
-            
-            scrollView.contentSize = imageView.frame.size
+            // how about we optional chain it
+            //that's make it this line will be ignored if scrollView is nil
+            // all that's happening here is that we are setting to image to nil
+            // it's for just preparing its going to start out nil
+            scrollView?.contentSize = imageView.frame.size
             
         }
         

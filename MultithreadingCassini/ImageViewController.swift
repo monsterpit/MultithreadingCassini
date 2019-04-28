@@ -83,7 +83,7 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
                 let urlContents = try? Data(contentsOf: url)
                 
                 DispatchQueue.main.async {
-                    if let imageData = urlContents{
+                    if let imageData = urlContents, url == self?.imageURL{
                         
                         self?.image = UIImage(data: imageData)
                         
@@ -91,30 +91,27 @@ class ImageViewController: UIViewController , UIScrollViewDelegate {
                 }
 
                 /*
-                 while this will stop my UI from blocking it will probably screwup my UI
-                 probably cause my UI to draw all funny or get completely wedged and why is that?
+                    But DispatchQueue.main.async is happening perhaps a minute
+                 after this line of code url = imageURL
                  
-                 because this line of code
-                 self?.image = UIImage(data: imageData)
-                 because here I am setting image
-                 and in line 30 set of private var image
-                 we are setting
-                 imageView.image which is a UI thing
-                 imageView.sizeToFit() sizzing to fit which is a UI thing
-                 scrollView?.contentSize = imageView.frame.size which is setting scrollView contentArea which is a  Ui thing
+                 It's putting on another queue it might be blocking the network
+                 Now that this leads us to another one last thing we need to do here is which is what happens if we request this thing
+                 and not through our UI but some other UI ,
+                 someone calls this imageURL and sets it to something else
+                 They set this imageURL to something else and we go to fetch that image
                  
-                 So we are doing all kind of UI stuffs when I set this image
-                 So I cant do this on the queue that I put this code on
-                 
-                 This
-                 DispatchQueue.global(qos: .userInitiated).async
-                 is not a UI queue
-                 i cant do it there,
-                 So what I have to do here is
-                 DispatchQueue.main.async{}
-                 
-                 This dispatches the code back to main queue
-                 Now it's gonna get in line and run on the main queue when the main queue is quiet
+                 what happens when this image self?.image = UIImage(data: imageData) comes back we dont care about it
+                 we are off on working on a new image , So when this comes back
+                 we need to make sure that our current ImageURL is the URl we requested here
+                 and we can easily do that by saying
+                 url == self?.imageURL which is weak
+                 So here we are just checking after this takes five minutes if that URl is  the one I asked for
+                 because if its not idc about it anymore in this class
+                 So this this is what i am talking about where when you are doing multithreading
+                 you have to think about timing of things
+                 because it might take a while and they might come back and things might be different than they were when you left
+                 So this is really a great little peice of code to really understand  because it covers a lot of ground
+                 from the weak self and checking this and dispatching back to main queue getting this one of the background queue
                  */
                 
                 

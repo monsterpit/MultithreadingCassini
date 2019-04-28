@@ -18,7 +18,13 @@ class CassiniViewController: UIViewController {
             //getting url from constant DemoUrl if segue identifier name key was present
             if let url = DemoURLs.NASA[identifier]{
                 
-                if let imageVC = segue.destination as? ImageViewController{
+                var destination = segue.destination
+                
+                if let navcon = destination as? UINavigationController{
+                    destination = navcon.visibleViewController ?? navcon
+                }
+                
+                if let imageVC = destination as? ImageViewController{
 
                     imageVC.imageURL = url
                     

@@ -19,16 +19,11 @@ class CassiniViewController: UIViewController {
             if let url = DemoURLs.NASA[identifier]{
                 
                 if let imageVC = segue.destination as? ImageViewController{
-                    // scrollView is nil
-                    // imageView was set to nil
-                    // oh imageURL was set by segue 
-                    //oops crashed when run prepares happens before outlets are set
+
                     imageVC.imageURL = url
                     
                     imageVC.title = (sender as? UIButton)?.currentTitle
-                    // is setting VC title with UIbutton title bad?
-                    // no it's not because you are not setting that titel of that destination imageVC to be same title as the button  , but presumably the button is localized to the local language so i am putting button title as in the title
-                    // could also used tableView could had added new things and could had easily picked which one was pressed by its index in the table
+
                 }
             }
         }
@@ -36,3 +31,15 @@ class CassiniViewController: UIViewController {
 
 
 }
+
+
+
+/*
+ So after running Ui was getting stuck when trying to rotate my Ui was just blank doing nothing
+ So our UI is completely stuck
+ No matter where I touch even if I rotate nothinhg happened
+ Well this ia horrendous experience for your user
+ This is the kind of experience that will cause your user to go and delete app
+ Because you cannot have your UI freezing up so that's why we have multi threaded as such an important piece of the kind of app development do in iOS
+ So lets fix this with multi threading 
+ */

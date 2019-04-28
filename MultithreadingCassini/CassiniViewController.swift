@@ -33,7 +33,7 @@ class CassiniViewController: UIViewController {
 }
 
 
-
+// always have extension like this when detail is wrapped inside navigation controller
 extension UIViewController{
     var contents : UIViewController{
         if let navcon = self as? UINavigationController{
